@@ -23,7 +23,12 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/Web/Login.jsp").forward(request, response);
+        HttpSession ses = request.getSession();
+        User u = (User) ses.getAttribute("User");
+        if (u == null)
+            request.getRequestDispatcher("Web/Login.jsp").forward(request, response);
+        else
+            response.sendRedirect(request.getContextPath() + "/Home");
     }    
     
     @Override
@@ -37,7 +42,7 @@ public class Login extends HttpServlet {
                 String Password = request.getParameter("Password");
                 if (LoginCheck(Username, Password) == null) {                    
                     ses.setAttribute("User", UserDAO.INS.getUserByName(Username));
-                    response.sendRedirect(request.getContextPath());
+                    response.sendRedirect(request.getContextPath()+ "/Home");
                 } else {
                     request.setAttribute("err", LoginCheck(Username, Password));
                     doGet(request, response);
@@ -46,7 +51,7 @@ public class Login extends HttpServlet {
                 doGet(request, response);
             }
         } else {
-            response.sendRedirect(request.getContextPath());
+            response.sendRedirect(request.getContextPath()+ "/Home");
         }
     }
     

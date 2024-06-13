@@ -15,6 +15,7 @@ import java.util.*;
  * @author hi2ot
  */
 public class QuestionDAO {
+
     List<Question> qul;
     private Connection con;
     private String status = "OK";
@@ -35,7 +36,7 @@ public class QuestionDAO {
     public void setStatus(String status) {
         this.status = status;
     }
-            
+
     private QuestionDAO() {
         if (INS == null) {
             try {
@@ -47,7 +48,7 @@ public class QuestionDAO {
             INS = this;
         }
     }
-    
+
     public void load() {
         String sql = "Select * From [Question]";
         qul = new Vector<Question>();
@@ -55,19 +56,21 @@ public class QuestionDAO {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-               int QuizID = rs.getInt("QuizID");
-               int QuestionID = rs.getInt("QuestionID");
-               String Question = rs.getString("Question");
-               String Explaination = rs.getString("Explaination");
-               qul.add(new Question(QuizID, QuestionID, Question, Explaination));
+                int CourseID = rs.getInt("CourseID");
+                int LessonID = rs.getInt("LessonID");
+                int QuizID = rs.getInt("QuizID");
+                int QuestionID = rs.getInt("QuestionID");
+                String Question = rs.getString("Question");
+                String Explaination = rs.getString("Explaination");
+                qul.add(new Question(CourseID, LessonID, QuizID, QuestionID, Question, Explaination));
             }
         } catch (Exception e) {
             status = "Error at load Question " + e.getMessage();
         }
-    }
-    
+    }   
+
     public static void main(String[] agrs) {
-        INS.load();
+        INS.load();        
         System.out.println(INS.getStatus());
     }
 }

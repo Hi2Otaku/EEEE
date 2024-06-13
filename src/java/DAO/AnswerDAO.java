@@ -4,28 +4,29 @@
  */
 package DAO;
 
+import java.util.*;
 import Models.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
 
 /**
  *
  * @author hi2ot
  */
-public class QuizDAO {
-    List<Quiz> ql;
+public class AnswerDAO {
+
+    private List<Answer> al;
     private Connection con;
     private String status = "OK";
-    public static QuizDAO INS = new QuizDAO();
+    public static AnswerDAO INS = new AnswerDAO();
 
-    public List<Quiz> getQl() {
-        return ql;
+    public List<Answer> getAl() {
+        return al;
     }
 
-    public void setQl(List<Quiz> ql) {
-        this.ql = ql;
+    public void setAl(List<Answer> al) {
+        this.al = al;
     }
 
     public String getStatus() {
@@ -34,9 +35,9 @@ public class QuizDAO {
 
     public void setStatus(String status) {
         this.status = status;
-    }        
-    
-    private QuizDAO() {
+    }
+
+    public AnswerDAO() {
         if (INS == null) {
             try {
                 con = new DBContext().getConnection();
@@ -47,29 +48,30 @@ public class QuizDAO {
             INS = this;
         }
     }
-    
+
     public void load() {
-        String sql = "Select * From [Quiz]";
-        ql = new Vector<Quiz>();
+        String sql = "Select * From [Answer]";
+        al = new Vector<Answer>();
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int CourseID = rs.getInt("CourseID");
                 int LessonID = rs.getInt("LessonID");
-                int QuizID = rs.getInt("QuizID");                
-                String QuizName = rs.getString("QuizName");
-                int NoQ = rs.getInt("NoQ");
-                java.sql.Date CreateDate = rs.getDate("CreateDate");
-                ql.add(new Quiz(CourseID, LessonID, QuizID, QuizName, NoQ, CreateDate));
+                int QuizID = rs.getInt("QuizID");
+                int QuestionID = rs.getInt("QuestionID");
+                int AnswerID = rs.getInt("AnswerID");
+                String Description = rs.getString("Description");
+                int Role = rs.getInt("Role");
+                al.add(new Answer(CourseID, LessonID, QuizID, QuestionID, AnswerID, Description, Role));
             }
         } catch (Exception e) {
-            status = "Error at load Quiz " + e.getMessage();
+            status = "Error at load Answer " + e.getMessage();
         }
-    }        
-    
-    public static void main(String[] agrs){
-        INS.load();
-        System.out.println(INS.getStatus());
+    }            
+
+    public static void main(String[] agrs) {
+        INS.load();        
+        System.out.println(INS.getStatus());        
     }
 }
